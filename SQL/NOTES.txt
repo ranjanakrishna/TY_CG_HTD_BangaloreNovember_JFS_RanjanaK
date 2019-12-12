@@ -1,0 +1,42 @@
+SELECTION: Retrieval of data by the help of only column_name.
+                           											ORDER OF EXECUTION
+SELECT */[DISTINCT] COLUMN_NAME/ EXPRESSION [ALIAS]								  (i) FROM
+FROM TABLE_NAME													 (ii) WHERE =>ROW BY ROW
+														(iii) SELECT =>ROW BY ROW
+------------------------------------------------------------------------------------------------------------------------------------------------
+PROJECTION: Retrieval of data by the help of both column and row names.
+
+SELECT */[DISTINCT] COLUMN_NAME/ EXPRESSION [ALIAS]
+FROM TABLE_NAME
+WHERE <filter condition>
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+GROUP BY:-
+														ORDER OF EXECUTION
+SELECT */[DISTINCT] COLUMN_NAME/EXPRESSION [ALIAS]								  (i) FROM
+FROM TABLE_NAME													 (ii) WHERE {IF ANY} =>ROW BY ROW
+[WHERE <FILTER CONDITION> ]											(iii) GROUP BY =>ROW BY ROW
+GROUP BY COLUMN_NAME												 (iv) SELECT =>GROUP BY GROUP
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+HAVING CLAUSE:-
+														ORDER OF EXECUTION
+SELECT */[DISTINCT] COLUMN_NAME/EXPRESSION [ALIAS]								(i) FROM
+FROM TABLE_NAME												       (ii) WHERE {IF ANY} =>ROW BY ROW
+[WHERE <FILTER CONDITION> ]										      (iii) GROUP BY =>ROW BY ROW
+GROUP BY COLUMN_NAME											       (iv) HAVING =>GROUP BY GROUP
+HAVING <GROUP FILTER CONDITION>											(v) SELECT =>GROUP BY GROUP
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+ORDER BY CLAUSE:-
+														ORDER OF EXECUTION
+SELECT */[DISTINCT] COLUMN_NAME/EXPRESSION [ALIAS]								(i) FROM
+FROM TABLE_NAME												       (ii) WHERE {IF ANY} =>ROW BY ROW
+[ WHERE <FILTER CONDITION> ]										      (iii) GROUP BY =>ROW BY ROW
+[ GROUP BY COLUMN_NAME ]										       (iv) HAVING =>GROUP BY GROUP
+[ HAVING <GROUP FILTER CONDITION> ]										(v) SELECT =>GROUP BY GROUP
+ORDER BY COLUMN_NAME											       (vi) ORDER BY =>ROW BY ROW
