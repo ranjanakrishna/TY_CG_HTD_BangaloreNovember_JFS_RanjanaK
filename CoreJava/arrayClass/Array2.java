@@ -1,0 +1,17 @@
+
+public class Array2 {
+	public static void main(String[] args) {
+		double a1[]=new double[4];
+		
+		a1[0]=10.8;
+		a1[1]=20;
+		a1[2]=30.5;
+		
+		System.out.println(a1.length);
+		
+		for(int i=0;i<a1.length;i++)
+		{
+			System.out.println(a1[i]);
+		}
+	}
+}
