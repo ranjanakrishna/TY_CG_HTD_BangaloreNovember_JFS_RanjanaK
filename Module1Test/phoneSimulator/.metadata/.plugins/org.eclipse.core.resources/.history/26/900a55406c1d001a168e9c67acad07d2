@@ -1,0 +1,48 @@
+package com.cg.phonesimulator.dao;
+
+import java.util.List;
+import java.util.Scanner;
+
+import com.cg.phonesimulator.bean.ContactBean;
+
+public class ContactDAOImpl implements ContactDAO{
+	Scanner sc=new Scanner(System.in);
+	@Override
+	public List<ContactBean> showAllContacts() {
+		
+		return null;
+	}
+
+	@Override
+	public ContactBean searchContact() {
+		
+		
+		System.out.println("Press 1 to call");
+		System.out.println("Press 2 to message");
+		System.out.println("Press 3 to go back to main menu");
+		System.out.println("Enter your choice...");
+		int choice=sc.nextInt();
+		switch (choice) {
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+
+		default:
+			break;
+		}
+		return null;
+		return null;
+	}
+
+	@Override
+	public boolean operateContact() {
+		return false;
+	}
+
+}

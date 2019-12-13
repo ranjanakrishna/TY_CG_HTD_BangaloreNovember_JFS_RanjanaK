@@ -1,0 +1,6 @@
+driverClass=com.mysql.jdbc.Driver
+dbUrl=jdbc:mysql://localhost:3306/contact_file
+dbUser=root
+dbPassword=root
+selectAll=select * from contact
+searchQuery=select * from contact where name=?

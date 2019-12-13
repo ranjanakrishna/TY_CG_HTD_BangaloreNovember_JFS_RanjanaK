@@ -1,0 +1,5 @@
+package com.cg.phonesimulator.services;
+
+public class ContactServicesImpl {
+
+}

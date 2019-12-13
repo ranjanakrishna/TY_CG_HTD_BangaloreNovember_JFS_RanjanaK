@@ -1,0 +1,17 @@
+package com.cg.phonesimulator.factory;
+
+import com.cg.phonesimulator.dao.ContactDAO;
+import com.cg.phonesimulator.dao.ContactDAOImpl;
+
+public class ContactFactory {
+	public ContactDAO instanceOfContactDAOImpl()
+	{
+		ContactDAO dao=new ContactDAOImpl();
+		return dao;
+	}
+	public ContactServices instanceOfContactServicesImpl()
+	{
+		ContactServices services=new ContactServicesImpl();
+		return services;
+	}
+}

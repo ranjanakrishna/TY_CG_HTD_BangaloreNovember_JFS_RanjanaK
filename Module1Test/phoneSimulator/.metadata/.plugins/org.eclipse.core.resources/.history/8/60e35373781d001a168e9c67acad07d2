@@ -1,0 +1,338 @@
+package com.cg.phonesimulator.dao;
+
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
+
+import com.cg.phonesimulator.bean.ContactBean;
+
+
+public class ContactDAOImpl implements ContactDAO{
+	Scanner sc=new Scanner(System.in);
+	FileReader reader;
+	Properties prop;
+	ContactBean bean;
+
+	public ContactDAOImpl()
+	{
+		try 
+		{
+			reader = new FileReader("db.properties");
+			prop=new Properties();
+			prop.load(reader);
+			Class.forName(prop.getProperty("driverClass"));
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+
+
+	@Override
+	public List<ContactBean> showAllContacts() {
+		List<ContactBean> list=new ArrayList<ContactBean>();
+		try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+				prop.getProperty("dbUser"),
+				prop.getProperty("dbPassword"));
+				Statement stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery(prop.getProperty("selectAll"))
+				)
+		{
+			while(rs.next())
+			{
+				ContactBean bean=new ContactBean();
+				bean.setName(rs.getString(1));
+				bean.setNumber(rs.getLong(2));
+				bean.setGroups(rs.getString(3));
+
+				list.add(bean);
+			}
+			return list;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ContactBean searchContact(String name) {
+		try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+				prop.getProperty("dbUser"),
+				prop.getProperty("dbPassword"));
+				PreparedStatement pstmt=con.prepareStatement(prop.getProperty("searchQuery")))
+		{
+			pstmt.setString(1, name);
+			ContactBean bean1=null;
+			ContactBean bean=new ContactBean();
+			if(bean.getName()==name)
+			{
+				bean1.getName();
+				bean1.getNumber();
+				bean1.getGroups();
+
+			}
+			return bean1;
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Press 1 to call");
+		System.out.println("Press 2 to message");
+		System.out.println("Press 3 to go back to main menu");
+		System.out.println("Enter your choice...");
+		int choice=sc.nextInt();
+		switch (choice) {
+		case 1:
+			System.out.println("Calling the contact");
+			System.out.println("Press 1 to End the call");
+			int ch=sc.nextInt();
+			System.out.println("call ended");
+			break;
+		case 2:
+			System.out.println("Enter the message to be sent");
+			String message=sc.next();
+			System.out.println("Sending the message");
+			break;
+		case 3:
+			
+			break;
+
+		default:
+			break;
+		}
+		return null;
+
+	}
+
+	@Override
+	public static boolean operateContact() 
+	{
+		System.out.println("Press 1 to add contact");
+		System.out.println("Press 2 to delete contact");
+		System.out.println("Press 3 to edit contact");
+		System.out.println("Enter your choice...");
+		int choice1=sc.nextInt();
+		switch (choice1) {
+		case 1:
+			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("insertQuery")))
+			{
+				pstmt.setString(1, bean.getName());
+				pstmt.setLong(2, bean.getNumber());
+				pstmt.setString(3, bean.getGroups());
+
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					return true;
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			break;
+		case 2:
+			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("deleteQuery")))
+			{
+				System.out.println("Enter contact name to be deleted");
+				String name=sc.next();
+				pstmt.setString(1, name);
+
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					return true;
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			
+			break;
+		case 3:
+			System.out.println("Enter contact name to modify profile");
+			String name=sc.next();
+			try(Connection con=DriverManager.getConnection(prop.getProperty("db.properties"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("editQuery")))
+			{
+				pstmt.setString(2, name);
+				System.out.println("Enter new number");
+				long number=sc.nextLong();
+				pstmt.setLong(1, number);
+
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					return true;
+				}
+
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+
+		default:
+			break;
+		}
+		return false;
+	}
+	//{
+		//				reader=new FileReader("db.properties");
+		//				prop=new Properties();
+		//				prop.load(reader);
+		//				Class.forName(prop.getProperty("driverClass"));
+		//			} 
+		//			catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
+		//		@Override
+		//		public List<UserBean> getAllUsers() {
+		//			List<UserBean> list=new ArrayList<UserBean>();
+		//			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+		//					prop.getProperty("dbUser"),
+		//					prop.getProperty("dbPassword"));
+		//					Statement stmt=con.createStatement();
+		//					ResultSet rs=stmt.executeQuery(prop.getProperty("query1")))
+		//			{
+		//				while(rs.next())
+		//				{
+		//					user=new UserBean();
+		//					user.setUserid(rs.getInt(1));
+		//					user.setUsername(rs.getString(2));
+		//					user.setEmail(rs.getString(3));
+		//					user.setPassword(rs.getString(4));
+		//					list.add(user);//to add all data into the list 
+		//				}
+		//				return list;
+		//			}
+		//			catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//			return null;
+		//		}
+		//
+		//		@Override
+		//		public UserBean userLogin(String username, String password) {
+		//			
+		//			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+		//					prop.getProperty("dbUser"),
+		//					prop.getProperty("dbPassword"));
+		//					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("loginQuery")))
+		//			{
+		//				pstmt.setString(1, username);
+		//				pstmt.setString(2, password);
+		//				
+		//				ResultSet rs=pstmt.executeQuery();
+		//				while(rs.next())
+		//				{
+		//					user=new UserBean();
+		//					user.setUserid(rs.getInt(1));
+		//					user.setUsername(rs.getString(2));
+		//					user.setEmail(rs.getString(3));
+		//				}
+		//				return user;
+		//				
+		//			} catch (Exception e) {
+		//				// TODO Auto-generated catch block
+		//				e.printStackTrace();
+		//			}
+		//			return null;
+		//		}
+		//
+		//		@Override
+		//		public boolean updateUser( int userid, String password,String email) {
+		//			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+		//					prop.getProperty("dbUser"),
+		//					prop.getProperty("dbPassword"));
+		//					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("updateQuery")))
+		//			{
+		//				pstmt.setInt(2,userid);
+		//				pstmt.setString(3, password);
+		//				pstmt.setString(1, email);
+		//				
+		//				int count=pstmt.executeUpdate();
+		//				if(count>0)
+		//				{
+		//					return true;
+		//				}
+		//				
+		//			} 
+		//			catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//			return false;
+		//		}
+		//
+		//		@Override
+		//		public boolean deleteUser(int userid, String password) {
+		//			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+		//					prop.getProperty("dbUser"),
+		//					prop.getProperty("dbPassword"));
+		//					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("deleteQuery")))
+		//			{
+		//				pstmt.setInt(1, userid);
+		//				pstmt.setString(2, password);
+		//				
+		//				int count=pstmt.executeUpdate();
+		//				if(count>0)
+		//				{
+		//					return true;
+		//				}
+		//			}
+		//			catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//			
+		//			return false;
+		//		}
+		//
+		//		@Override
+		//		public boolean insertUser(UserBean user) {
+		//			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+		//					prop.getProperty("dbUser"),
+		//					prop.getProperty("dbPassword"));
+		//					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("insertQuery")))
+		//			{
+		//				
+		//				pstmt.setInt(1, user.getUserid());
+		//				pstmt.setString(2, user.getUsername());
+		//				pstmt.setString(3, user.getEmail());
+		//				pstmt.setString(4, user.getPassword());
+		//				
+		//				int count=pstmt.executeUpdate();
+		//				if(count>0)
+		//				{
+		//					return true;
+		//				}
+		//			}
+		//			catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//			return false;
+		//		}
+
+
+
+
+	}

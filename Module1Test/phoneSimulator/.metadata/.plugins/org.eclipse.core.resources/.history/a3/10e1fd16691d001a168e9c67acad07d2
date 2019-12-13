@@ -1,0 +1,26 @@
+package com.cg.phonesimulator.services;
+
+import java.util.List;
+
+import com.cg.phonesimulator.bean.ContactBean;
+
+public class ContactServicesImpl implements ContactServices{
+
+	@Override
+	public List<ContactBean> showAllContacts() {
+		return null;
+	}
+
+	@Override
+	public ContactBean searchContact() {
+		return null;
+	}
+
+	@Override
+	public boolean operateContact() {
+		return false;
+	}
+
+	
+
+}

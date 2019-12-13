@@ -1,0 +1,88 @@
+package com.cg.phonesimulator.dao;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
+
+import com.cg.phonesimulator.bean.ContactBean;
+
+
+public class ContactDAOImpl implements ContactDAO{
+	Scanner sc=new Scanner(System.in);
+	FileReader reader;
+	Properties prop;
+	ContactBean bean;
+	
+	public ContactDAOImpl()
+	{
+		try 
+		{
+			reader = new FileReader("db.properties");
+			prop=new Properties();
+			prop.load(reader);
+			Class.forName(prop.getProperty("driverClass"));
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	
+	@Override
+	public List<ContactBean> showAllContacts() {
+		
+		return null;
+	}
+
+	@Override
+	public ContactBean searchContact() {
+		try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+				prop.getProperty("dbUser"),
+				prop.getProperty("dbPassword"));
+				PreparedStatement pstmt=con.prepareStatement(prop.getProperty("searchQuery")))
+		{
+			
+			
+			
+			
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Press 1 to call");
+		System.out.println("Press 2 to message");
+		System.out.println("Press 3 to go back to main menu");
+		System.out.println("Enter your choice...");
+		int choice=sc.nextInt();
+		switch (choice) {
+		case 1:
+
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+
+		default:
+			break;
+		}
+		return null;
+		
+	}
+
+	@Override
+	public boolean operateContact() {
+		return false;
+	}
+
+}

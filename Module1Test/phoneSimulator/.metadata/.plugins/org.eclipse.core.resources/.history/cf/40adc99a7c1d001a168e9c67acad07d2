@@ -1,0 +1,204 @@
+package com.cg.phonesimulator.dao;
+
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
+
+import com.cg.phonesimulator.bean.ContactBean;
+
+
+public class ContactDAOImpl implements ContactDAO{
+	Scanner sc=new Scanner(System.in);
+	FileReader reader;
+	Properties prop;
+	ContactBean bean;
+
+	public ContactDAOImpl()
+	{
+		try 
+		{
+			reader = new FileReader("db.properties");
+			prop=new Properties();
+			prop.load(reader);
+			Class.forName(prop.getProperty("driverClass"));
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+
+
+	@Override
+	public List<ContactBean> showAllContacts() {
+		List<ContactBean> list=new ArrayList<ContactBean>();
+		try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+				prop.getProperty("dbUser"),
+				prop.getProperty("dbPassword"));
+				Statement stmt=con.createStatement();
+				ResultSet rs=stmt.executeQuery(prop.getProperty("selectAll"))
+				)
+		{
+			while(rs.next())
+			{
+				ContactBean bean=new ContactBean();
+				bean.setName(rs.getString(1));
+				bean.setNumber(rs.getLong(2));
+				bean.setGroups(rs.getString(3));
+
+				list.add(bean);
+			}
+			return list;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ContactBean searchContact(String name) {
+		try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+				prop.getProperty("dbUser"),
+				prop.getProperty("dbPassword"));
+				PreparedStatement pstmt=con.prepareStatement(prop.getProperty("searchQuery")))
+		{
+			List<ContactBean> list=new ArrayList<ContactBean>();
+			for (ContactBean bean : list) {
+				if (bean.getName()==name) {
+					return bean;
+				}
+			}
+			
+		
+		System.out.println("Press 1 to call");
+		System.out.println("Press 2 to message");
+		System.out.println("Press 3 to go back to main menu");
+		System.out.println("Enter your choice...");
+		int choice=sc.nextInt();
+		switch (choice) {
+		case 1:
+			System.out.println("Calling the contact");
+			System.out.println("Press 1 to End the call");
+			int ch=sc.nextInt();
+			System.out.println("call ended");
+			break;
+		case 2:
+			System.out.println("Enter the message to be sent");
+			String message=sc.next();
+			System.out.println("Sending the message");
+			break;
+		case 3:
+			
+			break;
+
+		default:
+			break;
+		}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	return null;
+
+	}
+
+	@Override
+	public boolean operateContact() 
+	{
+		System.out.println("Press 1 to add contact");
+		System.out.println("Press 2 to delete contact");
+		System.out.println("Press 3 to edit contact");
+		System.out.println("Enter your choice...");
+		int choice1=sc.nextInt();
+		switch (choice1) {
+		case 1:
+			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("insertQuery")))
+			{
+				System.out.println("Enter name");
+				pstmt.setString(1, sc.next());
+				System.out.println("Enter number");
+				pstmt.setLong(2,sc.nextLong());
+				System.out.println("Enter group");
+				pstmt.setString(3,sc.next());
+				
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					System.out.println("Record added....");
+				}
+				else
+				{
+					System.err.println("Something went wrong....");
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			break;
+		case 2:
+			try(Connection con=DriverManager.getConnection(prop.getProperty("dbUrl"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("deleteQuery")))
+			{
+				System.out.println("Enter contact name to be deleted");
+				pstmt.setString(1, sc.next());
+
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					System.out.println("Record added....");
+				}
+				else
+				{
+					System.err.println("Something went wrong....");
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			
+			break;
+		case 3:
+			
+			try(Connection con=DriverManager.getConnection(prop.getProperty("db.properties"),
+					prop.getProperty("dbUser"),
+					prop.getProperty("dbPassword"));
+					PreparedStatement pstmt=con.prepareStatement(prop.getProperty("editQuery")))
+			{
+				System.out.println("Enter contact name to modify profile");
+				pstmt.setString(2, sc.next());
+				System.out.println("Enter new number");
+				pstmt.setLong(1, sc.nextLong());
+
+				int count=pstmt.executeUpdate();
+				if(count>0)
+				{
+					return true;
+				}
+
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+
+		default:
+			break;
+		}
+		return false;
+	}
+}
