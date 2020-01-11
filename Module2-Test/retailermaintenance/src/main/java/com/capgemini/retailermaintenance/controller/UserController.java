@@ -1,0 +1,108 @@
+package com.capgemini.retailermaintenance.controller;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.capgemini.retailermaintenance.dto.OrderBean;
+import com.capgemini.retailermaintenance.dto.ProductBean;
+import com.capgemini.retailermaintenance.dto.UserBean;
+import com.capgemini.retailermaintenance.dto.UserResponse;
+import com.capgemini.retailermaintenance.service.UserService;
+
+@RestController
+public class UserController {
+
+	@Autowired
+	private UserService service;
+
+	@PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public UserResponse register(@RequestBody UserBean bean) {
+		UserResponse response = new UserResponse();
+		if (service.createProfile(bean)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("User profile added");
+
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("User email already exists");
+		}
+		return response;
+	}
+
+	@PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public UserResponse login(@RequestBody UserBean bean) {
+		UserBean userbean = service.login(bean.getEmail(), bean.getPassword());
+		UserResponse response = new UserResponse();
+		if (userbean != null) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("User account is present");
+			response.setBeans(Arrays.asList(userbean));
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Invalid Credentials");
+		}
+		return response;
+	}
+
+	@GetMapping(path = "/getproduct", produces = MediaType.APPLICATION_JSON_VALUE)
+	public UserResponse getProduct(@RequestParam("productId") int productId) {
+		UserResponse response = new UserResponse();
+		ProductBean bean = service.getProduct(productId);
+		if (bean != null) {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Product is not found");
+
+		} else {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Product found");
+		}
+		return response;
+	}
+	
+	@PutMapping(path = "/changepassword", produces=MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public UserResponse changePassword(@RequestBody UserBean bean) {
+		UserResponse response = new UserResponse();
+		if( service.updatePassword(bean.getUserId(), bean.getPassword())){
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Password changed");
+		}else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Password not changed");
+		}
+		return response;
+	}
+	
+	@GetMapping(path = "/getorders", produces=MediaType.APPLICATION_JSON_VALUE)
+	public UserResponse searchEmployee(@RequestParam("userId")int userId) {
+		UserResponse response = new UserResponse();
+		List<OrderBean> beans = service.getOrders(userId);
+		if(beans.isEmpty()) {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("User Id not found");
+
+		}else {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("User data found");
+		}
+		return response;
+	}
+}
